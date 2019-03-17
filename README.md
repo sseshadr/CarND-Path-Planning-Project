@@ -1,11 +1,11 @@
 # CarND-Path-Planning-Project
 Create a path planner that is able to generate and follow a trajectory in a virtual highway scenario. Perform safe lane changes as necessary and travel near speed limit for as long as possible.
    
-#### NOTE: This project involves the Term 3 Simulator which can be downloaded [here] (https://github.com/udacity/self-driving-car-sim/releases). It also depends on the C++ eigen library which can be downloaded [here] (https://github.com/eigenteam/eigen-git-mirror).
+#### NOTE: This project involves the Term 3 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases/tag/T3_v1.2). It also depends on the C++ eigen library which can be downloaded [here](https://github.com/eigenteam/eigen-git-mirror).
 
 [//]: # (Image References)
 
-[image1]: ./readme_media/statemchine.png "Behavioral Planning Logic"
+[image1]: ./readme_media/stateMachine.png "Behavioral Planning Logic"
 [image2]: ./readme_media/20milestone.JPG "20 milestone"
 [image3]: ./readme_media/laneChange.gif "Lane Change"
 [image4]: ./readme_media/safeDistance.png "Safe Distance"
@@ -77,7 +77,7 @@ The logic can be better understood with the state machine diagram below:
 Once we have determined what action to perform, we can have boolean flags to keep track of what the car needs to do as decision makers. This will be used while planning the trajectory in the next section.
 
 #### Trajectory generation:
-The next part is to determine where the car needs to go based on the decisions in the previous section. To generate the trajectory, we use the spline library from [here] (http://kluge.in-chemnitz.de/opensource/spline/). To use the spline library, we need to supply a set of coarse waypoints to construct a smooth trajectory. We do this by 
+The next part is to determine where the car needs to go based on the decisions in the previous section. To generate the trajectory, we use the spline library from [here](http://kluge.in-chemnitz.de/opensource/spline/). To use the spline library, we need to supply a set of coarse waypoints to construct a smooth trajectory. We do this by 
 1. Including the last 2 waypoints of the previous path to ensure a smooth handover
 2. Calculating waypoints ahead of the car 30m, 60m and 90m ahead. This uses the prospective lane that the car needs to be in (set by the behavioral planner) and automatically handles waypoints necessary to shift lanes
 
@@ -92,7 +92,8 @@ For the most part, the simple logic passes the eye test and "human" driving beha
 2. Have the buffer distance be a function of car's velocity. This safe distance can be calculated using an equation as shown below:
 
 ![alt text][image4]
-[reference] (https://www.mathworks.com/help/mpc/examples/design-an-adaptive-cruise-control-system-using-model-predictive-control.html)
+
+[reference](https://www.mathworks.com/help/mpc/examples/design-an-adaptive-cruise-control-system-using-model-predictive-control.html)
 
 where D_Default is the standstill default spacing (our buffer currently) and T_gap is the time gap between the vehicles. Using a dynamic approach like this maybe useful in cases where the car is stuck in a constant velocity cluster where all the surrounding cars are moving in a similar pattern and adjusting the safe distance becomes a way to get out of the cluster.
 

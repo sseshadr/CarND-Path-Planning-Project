@@ -143,13 +143,13 @@ int main() {
               
               left_lane_s += ((double)prev_size * 0.02 * left_lane_speed);
               
-              if(std::fabs(left_lane_s - car_s) < ego_buffer) // should I check for both?
+              if(std::fabs(left_lane_s - car_s) < ego_buffer) // Check if car is in the relative left lane and in the buffer
               {
-                if (std::fabs(left_lane_s - car_s) < closest_s[0])
+                if (std::fabs(left_lane_s - car_s) < closest_s[0]) // Check if current car is the closest car encountered for debugging
                 {
                   closest_s[0] = std::fabs(left_lane_s - car_s);
                 }
-                change_left = false;
+                change_left = false; // If any car is in the buffer, flip change flag to false
               }
             }
 
@@ -163,20 +163,21 @@ int main() {
               
               right_lane_s += ((double)prev_size * 0.02 * right_lane_speed);
               
-              if(std::fabs(right_lane_s - car_s) < ego_buffer) // should I check for both?
+              if(std::fabs(right_lane_s - car_s) < ego_buffer) // Check if car is in the relative right lane and in the buffer
               {
-                if (std::fabs(right_lane_s - car_s) < closest_s[1])
+                if (std::fabs(right_lane_s - car_s) < closest_s[1]) // Check if current car is the closest car encountered for debugging
                 {
                   closest_s[1] = std::fabs(right_lane_s - car_s);
                 }
-                change_right = false;
+                change_right = false; // If any car is in the buffer, flip change flag to false
               }
             }
           }
           
-          std::cout << "Closest left: " << closest_s[0] << "  Closest right: " << closest_s[1] << std::endl;
-          std::cout << "Change  left: " << change_left  << "  Change  right: " << change_right << std::endl;
-          std::cout << "Too close:    " << too_close << std::endl;
+          // // Debug info
+          // std::cout << "Closest left: " << closest_s[0] << "  Closest right: " << closest_s[1] << std::endl;
+          // std::cout << "Change  left: " << change_left  << "  Change  right: " << change_right << std::endl;
+          // std::cout << "Too close:    " << too_close << std::endl;
          
           if(too_close)
           {
@@ -187,10 +188,11 @@ int main() {
               ref_vel -= 0.224;
             }
 
+            // Check if it is safe to shift left to overtake slower car as a default option to satisfy road rules
             if(change_left && lane > 0)
             {
               lane -= 1;
-            }
+            } // If left shift is not possible, shift right if it is safe
             else if(change_right && lane < 2)
             {
               lane += 1;
@@ -199,9 +201,7 @@ int main() {
           }
           else
           {
-            // std::cout << "Current lane: " << lane << ", Fastest lane: " << fastest_lane << std::endl;
-            // std::cout << "Keep lane, in the fastest lane" << std::endl;    
-            // Acclerate to speed limit
+            // Accelerate to speed limit if not too close
             if (ref_vel <49.5)
             {
               ref_vel += 0.224;
